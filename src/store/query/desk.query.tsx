@@ -10,33 +10,27 @@ export const deskApi = createApi({
     endpoints: (builder) => ({
         getAllDesks: builder.query<Desk[], void>({
             query: () => ({
-                url: `/api/v1/desk`,
-                method: 'GET',
-            }),
-        }),
-        getDesk: builder.query<Desk[], string>({
-            query: (id: string) => ({
-                url: `/api/v1/desk/${id}`,
+                url: `/desk`,
                 method: 'GET',
             }),
         }),
         createDesk: builder.mutation<void, Desk>({
             query: (body) => ({
-                url: `/api/v1/desk`,
+                url: `/desk`,
                 method: 'POST',
                 body,
             }),
         }),
         updateDesk: builder.mutation<void, Desk>({
             query: (body) => ({
-                url: `/api/v1/desk`,
+                url: `/desk`,
                 method: 'PUT',
                 body,
             }),
         }),
         deleteDesk: builder.mutation<void, string>({
             query: (id) => ({
-                url: `/api/v1/desk/${id}`,
+                url: `desk/${id}`,
                 method: 'DELETE',
             }),
         }),
@@ -44,9 +38,8 @@ export const deskApi = createApi({
 })
 
 export const {
-    useGetAllDesksQuery,
     useCreateDeskMutation,
-    useGetDeskQuery,
     useDeleteDeskMutation,
     useUpdateDeskMutation,
+    useGetAllDesksQuery,
 } = deskApi

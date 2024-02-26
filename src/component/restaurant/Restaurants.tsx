@@ -10,25 +10,23 @@ import IconButton from '@mui/material/IconButton';
 import Grid from '@mui/material/Grid';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import {useDeleteManufacturerMutation, useGetAllManufacturersQuery} from "../store/query/manufacturer.query";
 import {Button} from "@mui/material";
-import {getRoleFromToken} from "../utils/utils";
-import {Manufacturer} from "../types/auth/types";
-import EditManufacturerComponent from "./EditManufacturerComponent";
-import ConfirmDialog from "./dialog/ConfirmDialog";
-import PrecisionManufacturingIcon from '@mui/icons-material/PrecisionManufacturing';
-import {FormattedMessage} from "react-intl";
+import {getRoleFromToken} from "../../utils/utils";
+import {Restaurant} from "../../types/auth/types";
+import EditRestaurantComponent from "./EditRestaurantComponent";
+import ConfirmDialog from "../dialog/ConfirmDialog";
+import FoodBankIcon from '@mui/icons-material/FoodBank';
+import {useDeleteRestaurantMutation, useGetRestaurantsByOwnerQuery} from "../../store/query/restaurant.query";
 
-export default function Manufacturers() {
+export default function Restaurants() {
     const isAdmin = getRoleFromToken();
-    const {data, refetch} = useGetAllManufacturersQuery()
-    const [deleteManufacturer] = useDeleteManufacturerMutation();
+    const {data, refetch} = useGetRestaurantsByOwnerQuery()
+    const [deleteRestaurant] = useDeleteRestaurantMutation();
     const [open, setOpen] = useState<boolean>(false)
     const [openEdit, setOpenEdit] = useState<boolean>(false)
-    const [manufacturer, setManufacturer] = useState<Manufacturer | undefined>()
-    const [manufacturerToDelete, setManufacturerToDelete] = useState<Manufacturer | undefined>()
+    const [restaurant, setManufacturer] = useState<Restaurant | undefined>()
+    const [restaurantToDelete, setRestaurantToDelete] = useState<Restaurant | undefined>()
     const [openDeleteDialog, setDeleteDialog] = useState<boolean>(false)
-
 
     return (
         <Box sx={{flexGrow: 1}}>
@@ -37,12 +35,12 @@ export default function Manufacturers() {
                 <Box sx={{display: 'flex', justifyContent: "end"}}>
                     {
                         isAdmin && <Button variant='contained' type='submit' onClick={() => setOpen(true)}>
-                            <FormattedMessage id="create_manufacturer"/></Button>
+                            Create restaurant</Button>
                     }
                 </Box>
                 <Box>
                     <List>
-                        {data?.map(manufacturer => {
+                        {data?.map(restaurant => {
                             return <ListItem
                                 sx={{
                                     border: '0.5px solid #cd3d6f',
@@ -53,13 +51,13 @@ export default function Manufacturers() {
                                     <>
                                         <IconButton>
                                             <DeleteIcon onClick={() => {
-                                                setManufacturerToDelete(manufacturer)
+                                                setRestaurantToDelete(restaurant)
                                                 setDeleteDialog(true)
                                             }}/>
                                         </IconButton>
                                         <IconButton>
                                             <EditIcon onClick={() => {
-                                                setManufacturer(manufacturer)
+                                                setManufacturer(restaurant)
                                                 setOpenEdit(true)
                                             }}/>
                                         </IconButton>
@@ -68,11 +66,11 @@ export default function Manufacturers() {
                             >
                                 <ListItemAvatar>
                                     <Avatar>
-                                        <PrecisionManufacturingIcon/>
+                                        <FoodBankIcon/>
                                     </Avatar>
                                 </ListItemAvatar>
                                 <ListItemText
-                                    primary={manufacturer.name}
+                                    primary={restaurant.name}
                                 />
                             </ListItem>
                         })}
@@ -80,17 +78,17 @@ export default function Manufacturers() {
                 </Box>
             </Grid>
             {openEdit &&
-            <EditManufacturerComponent open={openEdit} manufacturer={manufacturer} setOpen={setOpenEdit}
-                                       refetch={refetch}/>}
+            <EditRestaurantComponent open={openEdit} restaurant={restaurant} setOpen={setOpenEdit}
+                                     refetch={refetch}/>}
             {open &&
-            <EditManufacturerComponent open={open} setOpen={setOpen} refetch={refetch}/>}
+            <EditRestaurantComponent open={open} setOpen={setOpen} refetch={refetch}/>}
             <ConfirmDialog
                 open={openDeleteDialog}
                 setOpen={setDeleteDialog}
-                title="Delete manufacturer"
-                description="Are you sure you want to delete manufacturer"
+                title="Delete restaurant"
+                description="Are you sure you want to delete restaurant"
                 onConfirm={() => {
-                    manufacturerToDelete?.id && deleteManufacturer(manufacturerToDelete?.id).then(() => {
+                    restaurantToDelete?.id && deleteRestaurant(restaurantToDelete?.id).then(() => {
                         refetch()
                     })
                 }}

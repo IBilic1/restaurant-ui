@@ -16,51 +16,53 @@ export type AuthResponse = {
 };
 
 export type User = {
-    id?: number;
+    id?: string;
     firstName?: string;
     lastName?: string;
     email?: string;
 };
 
-export type Appointment = {
-    id?: number;
-    startDateTime: string;
-    endDateTime: string;
-    address: string;
-    doctor?: User;
-    patient?: User;
-};
-
-export type Medicine = {
-    id?: number;
-    name: string;
-    description: string;
-    manufacturerId: number;
-};
-
-export type Manufacturer = {
-    id?: number;
-    name?: string;
-    address?: string;
-};
-
-export type Order = {
-    id?: number;
-    description?: string;
-    amount?: number;
-    doseGap?: number;
-    medicine?: Medicine;
-};
-
-export type PrescriptionUser = {
+export type Owner = {
     email: string;
     password?: string;
 };
 
-export type Prescription = {
-    id?: number;
-    patient?: PrescriptionUser;
-    doctor?: PrescriptionUser;
-    orders: Order[];
-    helperOrder?: Order;
+export type Restaurant = {
+    id?: string;
+    name?: string;
+    owner?: Owner;
+    desks?: Desk[];
+};
+
+export type Ingredient = {
+    id?: string;
+    name?: string;
+};
+
+export type Dish = {
+    id?: string;
+    name?: string;
+    ingredients?: Ingredient[];
+    ingredientsHelper?: string[];
+    restaurant?: Restaurant;
+};
+
+export type Desk = {
+    id?: string;
+    size?: number;
+    restaurant?: Restaurant;
+};
+
+export type Reservation = {
+    id?: string;
+    reservedBy?: User;
+    desk?: Desk;
+    reservationTime?: string;
+};
+
+export type Order = {
+    id?: string;
+    orderBy?: User;
+    dishes?: Dish[];
+    orderTime?: string;
 };

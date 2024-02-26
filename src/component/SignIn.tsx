@@ -4,8 +4,6 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -14,10 +12,12 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import {useSignInMutation} from "../store/query/auth.query";
 import {useNavigate} from "react-router-dom";
-import {FormattedMessage} from "react-intl";
+import {useSnackbar} from "notistack";
 
 export default function SignIn() {
     const navigate = useNavigate();
+    const {enqueueSnackbar} = useSnackbar();
+
     const [signIn, {data: singinData}] = useSignInMutation();
     const [formErrors, setFormErrors] = useState({
         email: "",
@@ -26,6 +26,7 @@ export default function SignIn() {
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+
         const errors: any = {};
         const data = new FormData(event.currentTarget);
         if (!data.get('email')) {
@@ -41,6 +42,10 @@ export default function SignIn() {
             signIn({
                 email: data.get('email') as string,
                 password: data.get('password') as string,
+            }).then((response) => {
+                if ("error" in response && response.error !== undefined) {
+                    enqueueSnackbar('Error while logging in', {variant: "error"})
+                }
             })
         }
     };
@@ -67,14 +72,14 @@ export default function SignIn() {
                     <LockOutlinedIcon/>
                 </Avatar>
                 <Typography component="h1" variant="h5">
-                    <FormattedMessage id="signIn"/> </Typography>
+                    Sign in </Typography>
                 <Box component="form" onSubmit={handleSubmit} noValidate sx={{mt: 1}}>
                     <TextField
                         margin="normal"
                         required
                         fullWidth
                         id="email"
-                        label={<FormattedMessage id="email"/>}
+                        label='Email'
                         name="email"
                         autoComplete="email"
                         autoFocus
@@ -88,7 +93,7 @@ export default function SignIn() {
                         required
                         fullWidth
                         name="password"
-                        label={<FormattedMessage id="password"/>}
+                        label='Password'
                         type="password"
                         id="password"
                         autoComplete="current-password"
@@ -97,10 +102,6 @@ export default function SignIn() {
                                 sx={{paddingLeft: 2, fontSize: '0.8rem', marginTop: '0.5rem'}}>
                         {formErrors.password}
                     </Typography>
-                    <FormControlLabel
-                        control={<Checkbox value="remember" color="primary"/>}
-                        label={<FormattedMessage id="rememberMe"/>}
-                    />
                     <Button
                         type="submit"
                         fullWidth
@@ -112,12 +113,12 @@ export default function SignIn() {
                     <Grid container>
                         <Grid item xs>
                             <Link href="#" variant="body2">
-                                {<FormattedMessage id="forgotPassword"/>}
+                                Forgot your password?
                             </Link>
                         </Grid>
                         <Grid item>
                             <Link href="/sign-up" variant="body2">
-                                {<FormattedMessage id="dontHaveAccount"/>}
+                                Don't have an account? Sign Up
                             </Link>
                         </Grid>
                     </Grid>

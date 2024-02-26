@@ -14,10 +14,12 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import {useSignUpMutation} from "../store/query/auth.query";
 import {useNavigate} from "react-router-dom";
-import {FormattedMessage} from "react-intl";
+import {useSnackbar} from "notistack";
 
 export default function SignUp() {
     const navigate = useNavigate();
+    const {enqueueSnackbar} = useSnackbar();
+
     const [signUp, {data: singUpData}] = useSignUpMutation();
     const [role, setRole] = useState<"ADMIN" | "USER">("USER")
     const [formErrors, setFormErrors] = useState({
@@ -54,6 +56,10 @@ export default function SignUp() {
                 firstName: data.get('firstName') as string,
                 lastName: data.get('lastName') as string,
                 role
+            }).then((response) => {
+                if ("error" in response && response.error !== undefined) {
+                    enqueueSnackbar('Error while registering', {variant: "error"})
+                }
             });
         }
     };
@@ -80,7 +86,7 @@ export default function SignUp() {
                     <LockOutlinedIcon/>
                 </Avatar>
                 <Typography component="h1" variant="h5">
-                    <FormattedMessage id="signUp"/>
+                    Sign up
                 </Typography>
                 <Box component="form" noValidate onSubmit={handleSubmit} sx={{mt: 3}}>
                     <Grid container spacing={2}>
@@ -91,7 +97,7 @@ export default function SignUp() {
                                 required
                                 fullWidth
                                 id="firstName"
-                                label={<FormattedMessage id="firstName"/>}
+                                label='First name'
                                 autoFocus
                             />
                             <Typography variant="body2" color="error"
@@ -104,7 +110,7 @@ export default function SignUp() {
                                 required
                                 fullWidth
                                 id="lastName"
-                                label={<FormattedMessage id="lastName"/>}
+                                label='Last name'
                                 name="lastName"
                                 autoComplete="family-name"
                             />
@@ -118,7 +124,7 @@ export default function SignUp() {
                                 required
                                 fullWidth
                                 id="email"
-                                label={<FormattedMessage id="email"/>}
+                                label='Email'
                                 name="email"
                                 autoComplete="email"
                             />
@@ -132,7 +138,7 @@ export default function SignUp() {
                                 required
                                 fullWidth
                                 name="password"
-                                label={<FormattedMessage id="password"/>}
+                                label='Password'
                                 type="password"
                                 id="password"
                                 autoComplete="new-password"
@@ -153,7 +159,7 @@ export default function SignUp() {
                                             setRole("USER")
                                         }
                                     })}/>}
-                                label={<FormattedMessage id="iAmDoctor"/>}
+                                label='I am owner'
                             />
                         </Grid>
                     </Grid>
@@ -163,12 +169,12 @@ export default function SignUp() {
                         variant="contained"
                         sx={{mt: 3, mb: 2}}
                     >
-                        {<FormattedMessage id="signUp"/>}
+                        Sign up
                     </Button>
                     <Grid container justifyContent="flex-end">
                         <Grid item>
                             <Link href="/sign-in" variant="body2">
-                                <FormattedMessage id="alreadyHaveAnAccount"/>
+                                Already have an account?
                             </Link>
                         </Grid>
                     </Grid>
